@@ -1,4 +1,5 @@
 ﻿using BlogProject.Domain.Enum;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,9 +18,8 @@ namespace BlogProject.Domain.Entities
         public string LastName { get; set; }
         public string ImagePath { get; set; }
 
-        //TODO
-        //[NotMapped]
-        //public IFormFile UploadPath { get; set; }
+        [NotMapped]
+        public IFormFile UploadPath { get; set; }
 
         //IBaseEntity
         public DateTime CreateDate { get; set; } = DateTime.Now;

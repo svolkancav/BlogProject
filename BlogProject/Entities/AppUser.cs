@@ -1,4 +1,5 @@
 ﻿using BlogProject.Domain.Enum;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,9 @@ namespace BlogProject.Domain.Entities
     public class AppUser : IdentityUser, IBaseEntity
     {
 
+        [NotMapped]
+        public IFormFile UploadPath { get; set; }
         public string ImagePath { get; set; }
-
-        // TODO
-        //[NotMapped]
-        //public IFormFile UploadPath { get; set; }
 
         //IBaseEntity
         public DateTime CreateDate { get; set; } = DateTime.Now;

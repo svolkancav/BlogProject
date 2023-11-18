@@ -6,4 +6,21 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="AutoMapper\" />
+    <Folder Include="IoC\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.25" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.25" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlogProject.Infrastructure\BlogProject.Infrastructure.csproj" />
+    <ProjectReference Include="..\BlogProject\BlogProject.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
