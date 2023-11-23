@@ -21,7 +21,7 @@ namespace BlogProject.Application.Services.GenreServices
             _genreRepository = repository;
         }
 
-        public async Task Register(UpdateGenreDTO model)
+        public async Task Register(GenreDTO model)
         {
             Genre genre = new Genre()
             {
@@ -38,11 +38,10 @@ namespace BlogProject.Application.Services.GenreServices
             await _genreRepository.Delete(genre);
         }
 
-        public async Task<List<UpdateGenreDTO>> GetGenres()
+        public async Task<List<GenreDTO>> GetGenres()
         {
             var genre = await _genreRepository.GetFilteredList(
-                select: x => new UpdateGenreDTO
-                {
+                select: x => new GenreDTO { 
                     ID = x.ID,
                     Name = x.Name
                 },
@@ -53,10 +52,10 @@ namespace BlogProject.Application.Services.GenreServices
             return genre;
         }
 
-        public async Task<UpdateGenreDTO> GetByID(int id)
+        public async Task<GenreDTO> GetByID(int id)
         {
             Genre genre = await _genreRepository.GetDefault(x => x.ID == id);
-            UpdateGenreDTO genreDTO = new UpdateGenreDTO()
+            GenreDTO genreDTO = new GenreDTO()
             {
                 Name = genre.Name,
                 ID = genre.ID
@@ -64,14 +63,23 @@ namespace BlogProject.Application.Services.GenreServices
             return genreDTO;
         }
 
-        public async Task Update(UpdateGenreDTO model)
+        public async Task Update(GenreDTO model)
         {
-            Genre genre = await _genreRepository.GetDefault(x => x.ID == model.ID);
+            Genre genre = new Genre()
+            {
+                Name = model.Name
+            };
 
             if (genre != null)
             {
                 await _genreRepository.Update(genre);
             }
+        }
+
+        public async Task<GenreDTO> CreateGenre()
+        {
+            GenreDTO genreDTO = new GenreDTO();
+            return genreDTO;
         }
     }
 }

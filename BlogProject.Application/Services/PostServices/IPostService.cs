@@ -6,16 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlogProject.Application.Services.GenreServices
+namespace BlogProject.Application.Services.PostServices
 {
     public interface IPostService
     {
         Task Register(CreatePostDTO model);
         Task Delete(int id);
-        Task Update (UpdatePostDTO model);
+        Task Update(UpdatePostDTO model);
         Task<UpdatePostDTO> GetByID(int id);
         Task<List<PostVM>> GetPosts();
         Task<CreatePostDTO> CreatePost();
+        Task<LikePostDTO> LikePost(int id);
 
 
     }
