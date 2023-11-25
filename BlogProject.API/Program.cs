@@ -3,6 +3,8 @@ using Autofac;
 using BlogProject.Application.IoC;
 using BlogProject.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using BlogProject.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,25 @@ builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
 {
     builder.RegisterModule(new DependencyResolver());
 });
+
+builder.Services.AddIdentityCore<AppUser>().AddEntityFrameworkStores<AppDbContext>();
+
+
+builder.Services.AddIdentity<AppUser, IdentityRole>
+    (
+    options =>
+    {
+        options.SignIn.RequireConfirmedEmail = false;
+        options.SignIn.RequireConfirmedPhoneNumber = false;
+        options.SignIn.RequireConfirmedAccount = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequiredLength = 3;
+        options.Password.RequireNonAlphanumeric = false;
+    }
+    )
+    .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+
 
 
 

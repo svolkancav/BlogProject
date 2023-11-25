@@ -12,8 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlogProject.Application\BlogProject.Application.csproj" />
+    <ProjectReference Include="..\BlogProject.Domain\BlogProject.Domain.csproj" />
     <ProjectReference Include="..\BlogProject.Infrastructure\BlogProject.Infrastructure.csproj" />
-    <ProjectReference Include="..\BlogProject\BlogProject.Domain.csproj" />
   </ItemGroup>
 
 </Project>

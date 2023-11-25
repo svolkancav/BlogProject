@@ -5,47 +5,52 @@ using BlogProject.Domain.Entities;
 using BlogProject.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
-    builder.Configuration.GetConnectionString("DefaultConnectionVolkan")));
 
-builder.Services.AddIdentityCore<AppUser>().AddEntityFrameworkStores<AppDbContext>();
+#region API sonrasý kaldýrýlan kodlar
+//builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
+//    builder.Configuration.GetConnectionString("DefaultConnectionVolkan")));
 
-
-//AutoMapper service
-//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-builder.Services.AddIdentity<AppUser, IdentityRole>
-    (
-    options =>
-    {
-        options.SignIn.RequireConfirmedEmail = false;
-        options.SignIn.RequireConfirmedPhoneNumber = false;
-        options.SignIn.RequireConfirmedAccount = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequireLowercase = false;
-        options.Password.RequiredLength = 3;
-        options.Password.RequireNonAlphanumeric = false;
-    }
-    )
-    .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+//builder.Services.AddIdentityCore<AppUser>().AddEntityFrameworkStores<AppDbContext>();
 
 
-//IOC altýnda DependencyResolver class'ýnýn içinde tanýmladýk.
-//builder.Services.AddTransient<IGenreService, GenreService>();
-//builder.Services.AddTransient<IGenreRepository, GenreRepository>();
+////AutoMapper service
+////builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+//builder.Services.AddIdentity<AppUser, IdentityRole>
+//    (
+//    options =>
+//    {
+//        options.SignIn.RequireConfirmedEmail = false;
+//        options.SignIn.RequireConfirmedPhoneNumber = false;
+//        options.SignIn.RequireConfirmedAccount = false;
+//        options.Password.RequireUppercase = false;
+//        options.Password.RequireLowercase = false;
+//        options.Password.RequiredLength = 3;
+//        options.Password.RequireNonAlphanumeric = false;
+//    }
+//    )
+//    .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
 
-builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
-{
-    builder.RegisterModule(new DependencyResolver());
-});
+////IOC altýnda DependencyResolver class'ýnýn içinde tanýmladýk.
+////builder.Services.AddTransient<IGenreService, GenreService>();
+////builder.Services.AddTransient<IGenreRepository, GenreRepository>();
+
+////API yazýnca kalktý
+////builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+////builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
+////{
+////    builder.RegisterModule(new DependencyResolver());
+////});
+#endregion
+
 
 
 
