@@ -102,17 +102,17 @@ namespace BlogProject.Application.Services.AppUserService
             var users = await _appUserRepository.GetFilteredList(
                 select: x => new UpdateProfileDTO
                 {
-                    Id = Convert.ToInt32(x.Id),
+
                     UserName = x.UserName,
                     Email = x.Email,
                     Status = x.Status,
                 },
                 where: x => x.Status != Status.Passive,
-                orderBy: x=>x.OrderBy(x=>x.UserName)
+                orderBy: x => x.OrderBy(x => x.UserName)
 
-                ) ;
+                );
 
-            return users ;
+            return users;
         }
 
         public async Task<UpdateProfileDTO> GetUserByID(int id)
