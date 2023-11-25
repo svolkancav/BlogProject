@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using BlogProject.Application.Models.DTOs;
 using BlogProject.Application.Services.GenreServices;
 using BlogProject.Domain.Entities;
@@ -11,12 +11,12 @@ namespace BlogProject.API.Controllers
     public class GenreController : Controller
     {
         private readonly IGenreService _genreService;
-        private readonly IMapper _mapper;
 
-        public GenreController(IGenreService genreService, IMapper mapper)
+
+        public GenreController(IGenreService genreService)
         {
             _genreService = genreService;
-            _mapper = mapper;
+
         }
 
         [HttpGet]
