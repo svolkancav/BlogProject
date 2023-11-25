@@ -1,6 +1,5 @@
 ﻿using BlogProject.Application.Extensions;
 using BlogProject.Application.Models.VMs;
-using BlogProject.Domain.Entities;
 using BlogProject.Domain.Enum;
 using Microsoft.AspNetCore.Http;
 using System;

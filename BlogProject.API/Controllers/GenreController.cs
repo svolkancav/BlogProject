@@ -1,7 +1,5 @@
-﻿
-using BlogProject.Application.Models.DTOs;
+﻿using BlogProject.Application.Models.DTOs;
 using BlogProject.Application.Services.GenreServices;
-using BlogProject.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogProject.API.Controllers

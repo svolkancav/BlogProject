@@ -1,7 +1,6 @@
 using Autofac.Extensions.DependencyInjection;
 using Autofac;
 using BlogProject.Application.IoC;
-using BlogProject.Domain.Entities;
 using BlogProject.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
