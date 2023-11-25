@@ -13,7 +13,7 @@ namespace BlogProject.Application.Models.DTOs
         public string ConfirmedPassword { get; set; }
         public string Email { get; set; }
         public DateTime UpdateDate => DateTime.Now;
-        public Status Status => Status.Active;
+        public Status Status { get; set; } = Status.Active;
         public string ImagePath { get; set; }
 
         [PictureFileExtension]

@@ -1,4 +1,5 @@
-﻿using BlogProject.Application.Models.DTOs;
+﻿using AutoMapper;
+using BlogProject.Application.Models.DTOs;
 using BlogProject.Application.Models.VMs;
 using BlogProject.Domain.Entities;
 using BlogProject.Domain.Enum;
@@ -20,13 +21,15 @@ namespace BlogProject.Application.Services.PostServices
         private readonly IGenreRepository _genreRepository;
         private readonly IAuthorRepository _authorRepository;
         private readonly IAppUserRepository _appUserRepository;
+        private readonly IMapper _mapper;
 
-        public PostService(IPostRepository postRepository, IGenreRepository genreRepository, IAuthorRepository authorRepository, IAppUserRepository appUserRepository)
+        public PostService(IPostRepository postRepository, IGenreRepository genreRepository, IAuthorRepository authorRepository, IAppUserRepository appUserRepository, IMapper mapper)
         {
             _postRepository = postRepository;
             _genreRepository = genreRepository;
             _authorRepository = authorRepository;
             _appUserRepository = appUserRepository;
+            _mapper = mapper;
         }
 
         public async Task Delete(int id)
@@ -38,20 +41,21 @@ namespace BlogProject.Application.Services.PostServices
         public async Task<UpdatePostDTO> GetByID(int id)
         {
             Post post = await _postRepository.GetDefault(x => x.ID == id);
-            UpdatePostDTO dto = new UpdatePostDTO()
-            {
-                Authors = await _authorRepository.GetFilteredList(
+
+            var model = _mapper.Map<UpdatePostDTO>(post);
+            model.Authors = await _authorRepository.GetFilteredList(
                     select: x => new AuthorVM()
                     {
                         Id = x.ID,
                         FirstName = x.FirstName,
                         LastName = x.LastName,
                     },
-                    where: x=>x.Status != Status.Passive,
-                    orderBy: x=>x.OrderBy(x=>x.FirstName)
+                    where: x => x.Status != Status.Passive,
+                    orderBy: x => x.OrderBy(x => x.FirstName)
 
-                    ),
-                Genres = await _genreRepository.GetFilteredList(
+                    );
+
+            model.Genres = await _genreRepository.GetFilteredList(
                     select: x => new GenreVM()
                     {
                         Id = x.ID,
@@ -59,9 +63,40 @@ namespace BlogProject.Application.Services.PostServices
                     },
                     where: x => x.Status != Status.Passive,
                     orderBy: x => x.OrderBy(x => x.Name)
-                    )
-            };
-            return dto;
+                    );
+
+            return model;
+
+
+            #region MappingOncesi
+            //UpdatePostDTO dto = new UpdatePostDTO()
+            //{
+            //    Authors = await _authorRepository.GetFilteredList(
+            //        select: x => new AuthorVM()
+            //        {
+            //            Id = x.ID,
+            //            FirstName = x.FirstName,
+            //            LastName = x.LastName,
+            //        },
+            //        where: x => x.Status != Status.Passive,
+            //        orderBy: x => x.OrderBy(x => x.FirstName)
+
+            //        ),
+            //    Genres = await _genreRepository.GetFilteredList(
+            //        select: x => new GenreVM()
+            //        {
+            //            Id = x.ID,
+            //            Name = x.Name,
+            //        },
+            //        where: x => x.Status != Status.Passive,
+            //        orderBy: x => x.OrderBy(x => x.Name)
+            //        )
+            //};
+            //return dto;
+            #endregion
+
+
+
         }
 
         public Task<List<PostVM>> GetPosts()
@@ -79,21 +114,23 @@ namespace BlogProject.Application.Services.PostServices
                  },
                  where: x => x.Status == Status.Active,
                  orderBy: x => x.OrderBy(x => x.Title),
-                 include: x=>x.Include(x=>x.Genre).Include(x=>x.Author)
+                 include: x => x.Include(x => x.Genre).Include(x => x.Author)
                  );
             return post;
         }
 
         public async Task Register(CreatePostDTO model)
         {
-            Post post = new Post()
-            {
-                AuthorID = model.AuthorId,
-                GenreID = model.GenreId,
-                Content = model.Content,
-                Title = model.Title
+            //Post post = new Post()
+            //{
+            //    AuthorID = model.AuthorId,
+            //    GenreID = model.GenreId,
+            //    Content = model.Content,
+            //    Title = model.Title
 
-            };
+            //};
+
+            Post post = _mapper.Map<Post>(model);
 
             //Post'un resmi varsa veritabanına yolu yazılmalı. Server üzerindeki bir klasöre de resmin kendisi eklenmeli.
 
@@ -116,13 +153,8 @@ namespace BlogProject.Application.Services.PostServices
 
         public async Task Update(UpdatePostDTO model)
         {
-            Post post = new Post()
-            {
-                AuthorID = model.AuthorId,
-                Content = model.Content,
-                ID = model.ID,
-                Title = model.Title
-            };
+            var post = _mapper.Map<Post>(model);
+           
 
             if (model.UploadPath != null)
             {
@@ -168,15 +200,27 @@ namespace BlogProject.Application.Services.PostServices
 
         }
 
-        public async Task<LikePostDTO> LikePost(int id)
+
+
+        public async Task<PostDetailsVM> GetPostDetails(int id)
         {
-            LikePostDTO likePostDTO = new LikePostDTO()
-            {
-                Post = await _postRepository.GetDefault(x=>x.Equals(id)),
-                User = await _appUserRepository.GetDefault(x => x.Id == id.ToString())
-                
-            };
-            return likePostDTO;
+            var post = await _postRepository.GetFilteredFirstOrDefault(
+                select: x => new PostDetailsVM()
+                {
+                    AuthorFirstName = x.Author.FirstName,
+                    AuthorLastName = x.Author.LastName,
+                    AuthorImagePath = x.Author.ImagePath,
+                    Content = x.Content,
+                    CreateDate = x.CreateDate,
+                    ImagePath = x.ImagePath,
+                    Title = x.Title
+                },
+                where: (x => x.ID == id),
+                orderBy: null,
+                include: x => x.Include(x => x.Author)
+
+                );
+            return post;
         }
 
     }

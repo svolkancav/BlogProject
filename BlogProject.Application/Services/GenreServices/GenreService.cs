@@ -1,4 +1,5 @@
-﻿using BlogProject.Application.Models.DTOs;
+﻿using AutoMapper;
+using BlogProject.Application.Models.DTOs;
 using BlogProject.Domain.Entities;
 using BlogProject.Domain.Enum;
 using BlogProject.Domain.Repositories;
@@ -14,25 +15,25 @@ namespace BlogProject.Application.Services.GenreServices
     public class GenreService : IGenreService
     {
         private readonly IGenreRepository _genreRepository;
+        private readonly IMapper _mapper;
 
 
-        public GenreService(IGenreRepository repository)
+        public GenreService(IGenreRepository repository, IMapper mapper)
         {
             _genreRepository = repository;
+            _mapper = mapper;
         }
 
         public async Task Register(GenreDTO model)
         {
-            Genre genre = new Genre()
-            {
-                Name = model.Name
-            };
+            var genre = _mapper.Map<Genre>(model);
+            
             await _genreRepository.Create(genre);
         }
 
         public async Task Delete(int id)
         {
-            Genre genre = await _genreRepository.GetDefault(x => x.Equals(id));
+            Genre genre = await _genreRepository.GetDefault(x => x.ID == id);
             genre.DeleteDate = DateTime.Now;
             genre.Status = Status.Passive;
             await _genreRepository.Delete(genre);
@@ -55,25 +56,21 @@ namespace BlogProject.Application.Services.GenreServices
         public async Task<GenreDTO> GetByID(int id)
         {
             Genre genre = await _genreRepository.GetDefault(x => x.ID == id);
-            GenreDTO genreDTO = new GenreDTO()
-            {
-                Name = genre.Name,
-                ID = genre.ID
-            };
-            return genreDTO;
+            var model = _mapper.Map<GenreDTO>(genre);
+           
+            return model;
         }
 
         public async Task Update(GenreDTO model)
         {
-            Genre genre = new Genre()
-            {
-                Name = model.Name
-            };
+            bool isExist = await _genreRepository.Any(x=>x.ID == model.ID);
 
-            if (genre != null)
+            if (isExist)
             {
+                var genre = _mapper.Map<Genre>(model);
                 await _genreRepository.Update(genre);
             }
+           
         }
 
         public async Task<GenreDTO> CreateGenre()

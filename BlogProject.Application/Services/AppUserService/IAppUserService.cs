@@ -14,6 +14,9 @@ namespace BlogProject.Application.Services.AppUserService
         Task<SignInResult> Login(LoginDTO model);
         Task<UpdateProfileDTO> GetByUserName(string userName);
         Task UpdateUser(UpdateProfileDTO model);
+        Task<List<UpdateProfileDTO>> GetUsers();
+        Task<UpdateProfileDTO> GetUserByID(int id);
+        Task DeleteUser(int id);
         Task Logout();
     }
 }

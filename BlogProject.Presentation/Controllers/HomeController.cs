@@ -1,4 +1,6 @@
-﻿using BlogProject.Presentation.Models;
+﻿using BlogProject.Application.Models.DTOs;
+using BlogProject.Application.Services.GenreServices;
+using BlogProject.Presentation.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,27 +8,30 @@ namespace BlogProject.Presentation.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IGenreService _genreService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IGenreService genreService)
         {
-            _logger = logger;
+            _genreService = genreService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
+        {
+
+            return View(await _genreService.GetGenres());
+        }
+
+        public IActionResult Create()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        [HttpPost]
+        public async Task<IActionResult> Create(GenreDTO model)
         {
-            return View();
+            await _genreService.Register(model);
+            return RedirectToAction("Index");
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
     }
 }

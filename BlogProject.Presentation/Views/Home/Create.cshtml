@@ -1,0 +1,10 @@
+﻿@model GenreDTO
+
+<h1>Create Genre</h1>
+<form method="post">    
+    <div class="form-group">        
+        <label asp-for="Name"></label>        
+        <input asp-for="Name" class="form-control" />        
+        <span asp-validation-for="Name" class="text-danger"></span>    
+    </div>     
+    <button type="submit" class="btn btn-primary">Create</button></form>

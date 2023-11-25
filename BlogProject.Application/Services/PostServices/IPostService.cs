@@ -16,8 +16,8 @@ namespace BlogProject.Application.Services.PostServices
         Task<UpdatePostDTO> GetByID(int id);
         Task<List<PostVM>> GetPosts();
         Task<CreatePostDTO> CreatePost();
-        Task<LikePostDTO> LikePost(int id);
 
+        Task<PostDetailsVM> GetPostDetails(int id);
 
     }
 }

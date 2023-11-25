@@ -15,7 +15,7 @@ namespace BlogProject.Domain.Entities
         public DateTime? DeleteDate { get; set; }
         public Status Status { get; set; }
 
-        public int AppUserID { get; set; }
+        public string AppUserID { get; set; }
         public AppUser AppUser { get; set; }
 
         public int PostId { get; set; }

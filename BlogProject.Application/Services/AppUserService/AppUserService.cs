@@ -1,5 +1,7 @@
-﻿using BlogProject.Application.Models.DTOs;
+﻿using AutoMapper;
+using BlogProject.Application.Models.DTOs;
 using BlogProject.Domain.Entities;
+using BlogProject.Domain.Enum;
 using BlogProject.Domain.Repositories;
 using BlogProject.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -16,12 +18,14 @@ namespace BlogProject.Application.Services.AppUserService
         private readonly IAppUserRepository _appUserRepository;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public AppUserService(IAppUserRepository appUserRepository, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager)
+        public AppUserService(IAppUserRepository appUserRepository, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IMapper mapper)
         {
             _appUserRepository = appUserRepository;
             _signInManager = signInManager;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         public async Task<UpdateProfileDTO> GetByUserName(string userName)
@@ -91,6 +95,40 @@ namespace BlogProject.Application.Services.AppUserService
                 }
 
             }
+        }
+
+        public async Task<List<UpdateProfileDTO>> GetUsers()
+        {
+            var users = await _appUserRepository.GetFilteredList(
+                select: x => new UpdateProfileDTO
+                {
+                    Id = Convert.ToInt32(x.Id),
+                    UserName = x.UserName,
+                    Email = x.Email,
+                    Status = x.Status,
+                },
+                where: x => x.Status != Status.Passive,
+                orderBy: x=>x.OrderBy(x=>x.UserName)
+
+                ) ;
+
+            return users ;
+        }
+
+        public async Task<UpdateProfileDTO> GetUserByID(int id)
+        {
+
+            var model = await _appUserRepository.GetDefault(x => Convert.ToInt32(x.Id) == id);
+            var user = _mapper.Map<UpdateProfileDTO>(model);
+            return user;
+        }
+
+        public async Task DeleteUser(int id)
+        {
+            AppUser user = await _appUserRepository.GetDefault(x => Convert.ToInt32(x.Id) == id);
+            user.DeleteDate = DateTime.Now;
+            user.Status = Status.Passive;
+            await _appUserRepository.Delete(user);
         }
 
 
