@@ -13,6 +13,7 @@ namespace BlogProject.Application.Models.DTOs
 {
     public class CreatePostDTO
     {
+        public int Id { get; set; }
         [Required(ErrorMessage ="Must to type title")]
         [MinLength(3, ErrorMessage ="Minimum Length is 3")]
         public string Title { get; set; }
@@ -23,7 +24,7 @@ namespace BlogProject.Application.Models.DTOs
         public string ImagePath { get; set; }
 
         [PictureFileExtension]
-        public IFormFile UploadPath { get; set; }
+        public IFormFile? UploadPath { get; set; }
         public DateTime CreateDate => DateTime.Now;
         public Status Status => Status.Active;
 

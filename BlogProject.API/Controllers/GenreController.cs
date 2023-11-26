@@ -1,9 +1,11 @@
 ﻿using BlogProject.Application.Models.DTOs;
 using BlogProject.Application.Services.GenreServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogProject.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[Controller]")]
     public class GenreController : Controller

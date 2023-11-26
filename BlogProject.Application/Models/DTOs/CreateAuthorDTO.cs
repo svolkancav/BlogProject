@@ -11,12 +11,13 @@ namespace BlogProject.Application.Models.DTOs
 {
     public class CreateAuthorDTO
     {
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string ImagePath { get; set; }
+        public string ImagePath { get; set; } = "empty";
 
         [PictureFileExtension]
-        public IFormFile UploadPath { get; set; }
+        public IFormFile? UploadPath { get; set; }
         public DateTime CreateDate => DateTime.Now;
         public Status Status => Status.Active;
     }

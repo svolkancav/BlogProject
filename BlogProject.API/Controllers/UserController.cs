@@ -1,6 +1,13 @@
-﻿using BlogProject.Application.Models.DTOs;
+﻿using AutoMapper;
+using BlogProject.Application.Models.DTOs;
 using BlogProject.Application.Services.AppUserService;
+using BlogProject.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace BlogProject.API.Controllers
 {
@@ -9,17 +16,21 @@ namespace BlogProject.API.Controllers
     public class UserController : Controller
     {
         private readonly IAppUserService _appUserService;
+        private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public UserController(IAppUserService appUserService)
+        public UserController(IAppUserService appUserService, IMapper mapper, IConfiguration configuration)
         {
             _appUserService = appUserService;
+            _mapper = mapper;
+            _configuration = configuration;
         }
 
         [HttpGet]
         [Route("[action]")]
-        public IActionResult GetUsers()
+        public async Task<IActionResult> GetUsers()
         {
-            var users = _appUserService.GetUsers();
+            var users = await _appUserService.GetUsers();
 
             if (users != null)
             {
@@ -83,5 +94,70 @@ namespace BlogProject.API.Controllers
             return Ok("User Silindi");
         }
 
+        [HttpPost]
+        [Route("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO model)
+        {
+
+            var result = await _appUserService.Login(model);
+
+            //Kullanici varsa JWT Token İşlemi Yapılır.
+            if (result.Succeeded)
+            {
+                var authClaims = new List<Claim> {
+                    new Claim(ClaimTypes.Name, model.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                };
+
+                var token = GetToken(authClaims);
+
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo
+                });
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
+
+        private JwtSecurityToken GetToken(List<Claim> authClaims)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:secretKey"]));
+            var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                _configuration["JwtSettings:validIssuer"],
+                _configuration["JwtSettings:validAudience"],
+                authClaims,
+                expires: DateTime.UtcNow.AddMinutes(10),
+                signingCredentials: signIn);
+
+            return token;
+        }
+
+        [HttpPost]
+        [Route("Register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDTO userDTO)
+        {
+            List<UpdateProfileDTO> tempUserDTO = await _appUserService.GetUsers();
+            UpdateProfileDTO tempUser = tempUserDTO.SingleOrDefault(x=>x.Email == userDTO.Email);
+
+            //var result = await _appUserService.Register(userDTO);
+
+            AppUser result = _mapper.Map<AppUser>(tempUser);
+
+            if (result == null)
+            {
+                await _appUserService.Register(userDTO);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+        }
     }
 }

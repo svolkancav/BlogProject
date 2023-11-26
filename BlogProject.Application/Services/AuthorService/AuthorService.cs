@@ -24,7 +24,7 @@ namespace BlogProject.Application.Services.AuthorService
 
         public async Task Delete(int id)
         {
-            Author author = await _authorRepository.GetDefault(x => x.Equals(id));
+            Author author = await _authorRepository.GetDefault(x => x.ID == id);
             author.DeleteDate = DateTime.Now;
             author.Status = Domain.Enum.Status.Passive;
             await _authorRepository.Delete(author);

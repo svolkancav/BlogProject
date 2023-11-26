@@ -23,12 +23,16 @@ namespace BlogProject.Application.IoC
         {
             builder.RegisterType<PostService>().As<IPostService>().InstancePerLifetimeScope();
             builder.RegisterType<PostRepository>().As<IPostRepository>().InstancePerLifetimeScope();
-            builder.RegisterType<GenreRepository>().As<IGenreRepository>().InstancePerLifetimeScope();
+
             builder.RegisterType<GenreService>().As<IGenreService>().InstancePerLifetimeScope();
+            builder.RegisterType<GenreRepository>().As<IGenreRepository>().InstancePerLifetimeScope();
+
             builder.RegisterType<AuthorRepository>().As<IAuthorRepository>().InstancePerLifetimeScope();
             builder.RegisterType<AuthorService>().As<IAuthorService>().InstancePerLifetimeScope();
+
             builder.RegisterType<AppUserRepository>().As<IAppUserRepository>().InstancePerLifetimeScope();
             builder.RegisterType<AppUserService>().As<IAppUserService>().InstancePerLifetimeScope();
+
             builder.RegisterType<Mapper>().As<IMapper>().InstancePerLifetimeScope();
 
             

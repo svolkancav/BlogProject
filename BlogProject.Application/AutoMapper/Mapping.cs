@@ -25,7 +25,9 @@ namespace BlogProject.Application.AutoMapper
             CreateMap <Author, UpdateAuthorDTO>().ReverseMap();
             CreateMap<Author, AuthorVM>().ReverseMap();
             CreateMap<Like, LikeVM>().ReverseMap();
-            
+            CreateMap<AppUser, UpdateProfileDTO>().ReverseMap();
+            CreateMap<AppUser, RegisterDTO>().ReverseMap();
+
 
         }
     }
